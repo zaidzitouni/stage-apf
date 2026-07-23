@@ -75,6 +75,24 @@ def reparer_ligne_clairsemee(row):
     return row
 
 
+import re
+
+
+def extraire_periode(chemin_pdf):
+    """
+    Repère la période couverte par le fichier depuis son texte
+    (ex. 'DU 01/12/2019 AU 31/12/2019') pour l'utiliser comme métadonnée
+    lors du chargement en base -> évite de coder la date en dur.
+    """
+    with pdfplumber.open(chemin_pdf) as pdf:
+        texte = pdf.pages[0].extract_text()
+    match = re.search(r"DU (\d{2})/(\d{2})/(\d{4}) AU", texte)
+    if not match:
+        return None
+    jour, mois, annee = match.groups()
+    return int(annee), int(mois)
+
+
 def construire_dataframe(chemin_pdf):
     brutes = extraire_lignes_brutes(chemin_pdf)
     lignes_donnees = []
@@ -99,27 +117,42 @@ def construire_dataframe(chemin_pdf):
 
 
 def valider(df, ligne_totaux_officielle):
-    """Vérifie les règles arithmétiques + le total officiel imprimé sur le PDF."""
-    anomalies = df[
-        (df.total_entree != df.femmes_entree + df.hommes_entree + df.mineurs_entree) |
-        (df.total_sortie != df.femmes_sortie + df.hommes_sortie + df.mineurs_sortie) |
-        (df.totaux != df.total_entree + df.total_sortie)
-    ]
-    print(f"Lignes extraites : {len(df)}")
-    print(f"Anomalies arithmétiques restantes : {len(anomalies)}")
-    if len(anomalies):
-        print(anomalies)
+    """
+    Ajoute des colonnes de contrôle (totaux recalculés) et un indicateur
+    booléen d'anomalie, SANS modifier les valeurs sources extraites du PDF
+    (on ne réécrit jamais une donnée source silencieusement).
+    """
+    df = df.copy()
+    df["total_entree_calcule"] = df.femmes_entree + df.hommes_entree + df.mineurs_entree
+    df["total_sortie_calcule"] = df.femmes_sortie + df.hommes_sortie + df.mineurs_sortie
+    df["totaux_calcule"] = df.total_entree_calcule + df.total_sortie_calcule
+    df["anomalie"] = (
+        (df.total_entree != df.total_entree_calcule)
+        | (df.total_sortie != df.total_sortie_calcule)
+        | (df.totaux != df.totaux_calcule)
+    )
 
-    somme_calculee = df.totaux.sum()
+    anomalies = df[df.anomalie]
+    print(f"Lignes extraites : {len(df)}")
+    print(f"Anomalies arithmétiques détectées : {len(anomalies)}")
+    if len(anomalies):
+        print(anomalies[["poste_frontiere", "totaux", "totaux_calcule"]].to_string(index=False))
+
+    somme_imprimee = df.totaux.sum()
     somme_officielle = int(ligne_totaux_officielle[-1])
-    print(f"Somme calculée des TOTAUX      : {somme_calculee}")
-    print(f"Total officiel imprimé sur PDF : {somme_officielle}")
-    print("-> Validation OK" if somme_calculee == somme_officielle else "-> ECART DETECTE")
+    print(f"\nSomme des TOTAUX imprimés sur le PDF (tels quels) : {somme_imprimee}")
+    print(f"Total officiel imprimé en bas du PDF              : {somme_officielle}")
+    print("-> Cohérent" if somme_imprimee == somme_officielle else "-> Écart (voir anomalies ci-dessus)")
+
+    return df
 
 
 if __name__ == "__main__":
+    annee, mois = extraire_periode(CHEMIN_PDF)
+    print(f"Période détectée dans le PDF : {mois:02d}/{annee}\n")
+
     df, ligne_totaux = construire_dataframe(CHEMIN_PDF)
-    valider(df, ligne_totaux)
+    df = valider(df, ligne_totaux)
     print("\nAperçu des 5 premières lignes :")
     print(df.head())
     print("\nLigne PA GUELMIM après correction :")
