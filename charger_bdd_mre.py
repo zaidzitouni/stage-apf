@@ -1,12 +1,6 @@
-"""
-Chargement des données validées du fichier MAROCAINS dans une base SQLite.
----------------------------------------------------------------------------
-Étape 2 du pipeline : réutilise les fonctions d'extraction/validation de
-extract_marocains.py, puis charge le résultat via le module partagé db_utils.
-"""
 from pathlib import Path
 
-from extract_marocains import CHEMIN_PDF, construire_dataframe, extraire_periode, valider
+from extract_mre import CHEMIN_PDF, construire_dataframe, extraire_periode, valider
 from db_utils import charger_dataframe, verifier_table
 
 CHEMIN_DB = Path(__file__).parent / "data" / "db" / "apf.db"
@@ -18,9 +12,9 @@ if __name__ == "__main__":
 
     print(f"\nChargement en base : {CHEMIN_DB}")
     charger_dataframe(
-        df, "marocains_controles",
+        df, "mre_controles",
         cle_primaire=["annee", "mois", "poste_frontiere"],
         chemin_db=CHEMIN_DB, annee=annee, mois=mois, fichier_source=CHEMIN_PDF.name,
     )
     print("Chargement terminé.\n")
-    verifier_table("marocains_controles", CHEMIN_DB)
+    verifier_table("mre_controles", CHEMIN_DB)
