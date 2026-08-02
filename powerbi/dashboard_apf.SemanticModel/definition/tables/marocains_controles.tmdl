@@ -1,0 +1,193 @@
+table marocains_controles
+	lineageTag: f374c378-bad5-428d-9c72-45f6575f74bb
+
+	column poste_frontiere
+		dataType: string
+		lineageTag: 0d873fb1-2c07-4166-bfed-32c5f46d6fdc
+		summarizeBy: none
+		sourceColumn: poste_frontiere
+
+		annotation SummarizationSetBy = Automatic
+
+	column femmes_entree
+		dataType: double
+		lineageTag: da864a9a-9e9a-40c1-8e89-cc7bbbe322c5
+		summarizeBy: none
+		sourceColumn: femmes_entree
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hommes_entree
+		dataType: double
+		lineageTag: 1c36e2d6-f8c3-4012-be0f-55db30198b45
+		summarizeBy: none
+		sourceColumn: hommes_entree
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mineurs_entree
+		dataType: double
+		lineageTag: 0b0cb899-1e05-49e6-8f0b-8c1c090330dc
+		summarizeBy: none
+		sourceColumn: mineurs_entree
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_entree
+		dataType: double
+		lineageTag: 11d78c66-0036-4601-9439-dcae01895072
+		summarizeBy: none
+		sourceColumn: total_entree
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column femmes_sortie
+		dataType: double
+		lineageTag: 479c163e-fec6-476a-9d62-e435638ae249
+		summarizeBy: none
+		sourceColumn: femmes_sortie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column hommes_sortie
+		dataType: double
+		lineageTag: c3aa3269-eb41-4793-9f54-622181c65478
+		summarizeBy: none
+		sourceColumn: hommes_sortie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mineurs_sortie
+		dataType: double
+		lineageTag: 9102760d-292a-4110-885a-a75798275868
+		summarizeBy: none
+		sourceColumn: mineurs_sortie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_sortie
+		dataType: double
+		lineageTag: 87acc1d2-570d-48bf-884a-f1e8ab44e341
+		summarizeBy: none
+		sourceColumn: total_sortie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column totaux
+		dataType: double
+		lineageTag: 542cdbd7-0217-45a6-bad8-a391f2bab842
+		summarizeBy: none
+		sourceColumn: totaux
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_entree_calcule
+		dataType: double
+		lineageTag: 2746f644-177d-407b-851a-a20c5ab09a86
+		summarizeBy: none
+		sourceColumn: total_entree_calcule
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column total_sortie_calcule
+		dataType: double
+		lineageTag: e8af177f-fdbe-4340-b135-44efafc4d639
+		summarizeBy: none
+		sourceColumn: total_sortie_calcule
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column totaux_calcule
+		dataType: double
+		lineageTag: ad12a8d0-b869-459d-8650-fdc30a869412
+		summarizeBy: none
+		sourceColumn: totaux_calcule
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column anomalie
+		dataType: double
+		lineageTag: 33f514f4-1ff4-4421-8b24-d7dff6626e64
+		summarizeBy: none
+		sourceColumn: anomalie
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column annee
+		dataType: double
+		lineageTag: e68c8d91-36ea-46a6-9699-5134968a8118
+		summarizeBy: none
+		sourceColumn: annee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mois
+		dataType: double
+		lineageTag: 630bd6b1-609d-420b-b540-02079cecb4fe
+		summarizeBy: none
+		sourceColumn: mois
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fichier_source
+		dataType: string
+		lineageTag: 9c3af14e-4ab5-4c34-9b7a-f409025f6ce9
+		summarizeBy: none
+		sourceColumn: fichier_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type_poste
+		dataType: string
+		lineageTag: 85587aa3-731f-4fc3-8018-52f1edabf1b0
+		summarizeBy: none
+		sourceColumn: Type_poste
+
+		annotation SummarizationSetBy = Automatic
+
+	partition marocains_controles = m
+		mode: import
+		source =
+				let
+				    Source = Odbc.DataSource("dsn=apf_db", [HierarchicalNavigation=true]),
+				    marocains_controles_Table = Source{[Name="marocains_controles",Kind="Table"]}[Data],
+				    #"Added Custom" = Table.AddColumn(marocains_controles_Table, "Type_poste", each if Text.Contains([poste_frontiere], "PF") or Text.Contains([poste_frontiere], "CCPF") then "Terrestre"
+				else if Text.Contains([poste_frontiere], "A") then "Aérien"
+				else "Maritime")
+				in
+				    #"Added Custom"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

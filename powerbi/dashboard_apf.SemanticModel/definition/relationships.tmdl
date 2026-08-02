@@ -1,0 +1,10 @@
+relationship AutoDetected_eb875de6-b9d2-4afe-a70b-0f1729114c40
+	crossFilteringBehavior: bothDirections
+	fromCardinality: one
+	fromColumn: mre_controles.poste_frontiere
+	toColumn: marocains_controles.poste_frontiere
+
+relationship AutoDetected_d5bbe375-3b77-4ec0-9962-3dc612e5a43a
+	fromColumn: touristes_pa.poste_frontiere
+	toColumn: marocains_controles.poste_frontiere
+

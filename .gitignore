@@ -10,3 +10,6 @@ wheels/
 .venv
 .env
 *.db
+
+# Power BI Project - fichiers locaux (cache de données, réglages machine)
+**/.pbi/

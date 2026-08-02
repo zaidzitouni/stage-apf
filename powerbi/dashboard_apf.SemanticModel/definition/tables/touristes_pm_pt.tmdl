@@ -1,0 +1,91 @@
+table touristes_pm_pt
+	lineageTag: 89d6b56c-774b-4b6e-a566-85ccd50130f6
+
+	column nationalite
+		dataType: string
+		lineageTag: 7c62de03-ccee-4e33-bcfd-5f50587beebd
+		summarizeBy: none
+		sourceColumn: nationalite
+
+		annotation SummarizationSetBy = Automatic
+
+	column totaux_nationalite
+		dataType: double
+		lineageTag: b86c6211-b7bb-4d14-9982-a1b4b5be7b1c
+		summarizeBy: sum
+		sourceColumn: totaux_nationalite
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column poste_frontiere
+		dataType: string
+		lineageTag: 9211582b-8187-4f1b-9d9b-238d27760134
+		summarizeBy: none
+		sourceColumn: poste_frontiere
+
+		annotation SummarizationSetBy = Automatic
+
+	column nombre
+		dataType: double
+		lineageTag: a8c65485-78f2-4900-881e-feae7a22eeed
+		summarizeBy: sum
+		sourceColumn: nombre
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column annee
+		dataType: double
+		lineageTag: 561ce044-5c12-4cd5-9321-2f0cdc7232d2
+		summarizeBy: sum
+		sourceColumn: annee
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column mois
+		dataType: double
+		lineageTag: 09c9fd83-b354-48ad-9f87-c1f777a05a11
+		summarizeBy: sum
+		sourceColumn: mois
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	column fichier_source
+		dataType: string
+		lineageTag: a839ea54-2d4a-4785-8384-69f36987e319
+		summarizeBy: none
+		sourceColumn: fichier_source
+
+		annotation SummarizationSetBy = Automatic
+
+	column Type_poste
+		dataType: string
+		lineageTag: 6b339d8c-0926-4eb8-986a-f84a9e4c8acb
+		summarizeBy: none
+		sourceColumn: Type_poste
+
+		annotation SummarizationSetBy = Automatic
+
+	partition touristes_pm_pt = m
+		mode: import
+		source =
+				let
+				    Source = Odbc.DataSource("dsn=apf_db", [HierarchicalNavigation=true]),
+				    touristes_pm_pt_Table = Source{[Name="touristes_pm_pt",Kind="Table"]}[Data],
+				    #"Added Custom" = Table.AddColumn(touristes_pm_pt_Table, "Type_poste", each if Text.Contains([poste_frontiere], "PF") or Text.Contains([poste_frontiere], "CCPF") then "Terrestre"
+				else if Text.Contains([poste_frontiere], "A") then "Aérien"
+				else "Maritime")
+				in
+				    #"Added Custom"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

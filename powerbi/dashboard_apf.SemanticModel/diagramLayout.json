@@ -1,0 +1,74 @@
+{
+  "version": "1.1.0",
+  "diagrams": [
+    {
+      "ordinal": 0,
+      "scrollPosition": {
+        "x": 0,
+        "y": 0
+      },
+      "nodes": [
+        {
+          "location": {
+            "x": 334.18475118062975,
+            "y": -50
+          },
+          "nodeIndex": "marocains_controles",
+          "nodeLineageTag": "f374c378-bad5-428d-9c72-45f6575f74bb",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 618.36163941535972,
+            "y": -36.675007367565115
+          },
+          "nodeIndex": "mre_controles",
+          "nodeLineageTag": "5c6b0680-e40c-40ce-90b4-d827f47990c3",
+          "size": {
+            "height": 300,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 50,
+            "y": -42.934890822657792
+          },
+          "nodeIndex": "touristes_pa",
+          "nodeLineageTag": "4b97dfb8-cb58-445d-90f3-834634dca883",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        },
+        {
+          "location": {
+            "x": 852.3616394153596,
+            "y": 32.662496316217442
+          },
+          "nodeIndex": "touristes_pm_pt",
+          "nodeLineageTag": "89d6b56c-774b-4b6e-a566-85ccd50130f6",
+          "size": {
+            "height": 248,
+            "width": 234
+          },
+          "zIndex": 0
+        }
+      ],
+      "name": "All tables",
+      "zoomValue": 100,
+      "pinKeyFieldsToTop": false,
+      "showExtraHeaderInfo": false,
+      "hideKeyFieldsWhenCollapsed": false,
+      "tablesLocked": false
+    }
+  ],
+  "selectedDiagram": "All tables",
+  "defaultDiagram": "All tables"
+}
