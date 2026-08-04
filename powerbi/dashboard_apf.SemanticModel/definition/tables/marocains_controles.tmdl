@@ -15,6 +15,8 @@ table marocains_controles
 		summarizeBy: none
 		sourceColumn: femmes_entree
 
+		changedProperty = IsHidden
+
 		annotation SummarizationSetBy = Automatic
 
 		annotation PBI_FormatHint = {"isGeneralNumber":true}
@@ -167,11 +169,11 @@ table marocains_controles
 
 		annotation SummarizationSetBy = Automatic
 
-	column Type_poste
+	column type_poste
 		dataType: string
 		lineageTag: 85587aa3-731f-4fc3-8018-52f1edabf1b0
 		summarizeBy: none
-		sourceColumn: Type_poste
+		sourceColumn: type_poste
 
 		annotation SummarizationSetBy = Automatic
 
@@ -181,11 +183,13 @@ table marocains_controles
 				let
 				    Source = Odbc.DataSource("dsn=apf_db", [HierarchicalNavigation=true]),
 				    marocains_controles_Table = Source{[Name="marocains_controles",Kind="Table"]}[Data],
-				    #"Added Custom" = Table.AddColumn(marocains_controles_Table, "Type_poste", each if Text.Contains([poste_frontiere], "PF") or Text.Contains([poste_frontiere], "CCPF") then "Terrestre"
-				else if Text.Contains([poste_frontiere], "A") then "Aérien"
-				else "Maritime")
+				    #"Added Custom" = Table.AddColumn(marocains_controles_Table, "Type_poste", each if Text.StartsWith([poste_frontiere], "CCPF") or Text.StartsWith([poste_frontiere], "PF ") then "Terrestre"
+				else if Text.StartsWith([poste_frontiere], "CSPA") or Text.StartsWith([poste_frontiere], "DPA") or Text.StartsWith([poste_frontiere], "PA ") then "Aérien"
+				else if Text.StartsWith([poste_frontiere], "CPM") or Text.StartsWith([poste_frontiere], "CSPM") or Text.StartsWith([poste_frontiere], "DPM") or Text.StartsWith([poste_frontiere], "PM ") or Text.Contains([poste_frontiere], "MARINA") then "Maritime"
+				else "Inconnu"),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Custom",{{"Type_poste", "type_poste"}})
 				in
-				    #"Added Custom"
+				    #"Renamed Columns"
 
 	annotation PBI_ResultType = Table
 

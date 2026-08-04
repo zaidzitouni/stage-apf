@@ -65,11 +65,11 @@ table touristes_pa
 
 		annotation SummarizationSetBy = Automatic
 
-	column Type_poste
+	column type_poste
 		dataType: string
 		lineageTag: 306cb332-a5a0-4690-a771-91621589ca23
 		summarizeBy: none
-		sourceColumn: Type_poste
+		sourceColumn: type_poste
 
 		annotation SummarizationSetBy = Automatic
 
@@ -79,11 +79,13 @@ table touristes_pa
 				let
 				    Source = Odbc.DataSource("dsn=apf_db", [HierarchicalNavigation=true]),
 				    touristes_pa_Table = Source{[Name="touristes_pa",Kind="Table"]}[Data],
-				    #"Added Custom" = Table.AddColumn(touristes_pa_Table, "Type_poste", each if Text.Contains([poste_frontiere], "PF") or Text.Contains([poste_frontiere], "CCPF") then "Terrestre"
-				else if Text.Contains([poste_frontiere], "A") then "Aérien"
-				else "Maritime")
+				    #"Added Custom" = Table.AddColumn(touristes_pa_Table, "Type_poste", each if Text.StartsWith([poste_frontiere], "CCPF") or Text.StartsWith([poste_frontiere], "PF ") then "Terrestre"
+				else if Text.StartsWith([poste_frontiere], "CSPA") or Text.StartsWith([poste_frontiere], "DPA") or Text.StartsWith([poste_frontiere], "PA ") then "Aérien"
+				else if Text.StartsWith([poste_frontiere], "CPM") or Text.StartsWith([poste_frontiere], "CSPM") or Text.StartsWith([poste_frontiere], "DPM") or Text.StartsWith([poste_frontiere], "PM ") or Text.Contains([poste_frontiere], "MARINA") then "Maritime"
+				else "Inconnu"),
+				    #"Renamed Columns" = Table.RenameColumns(#"Added Custom",{{"Type_poste", "type_poste"}})
 				in
-				    #"Added Custom"
+				    #"Renamed Columns"
 
 	annotation PBI_ResultType = Table
 

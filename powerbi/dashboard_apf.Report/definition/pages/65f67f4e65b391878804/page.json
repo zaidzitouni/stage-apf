@@ -1,7 +1,7 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/fabric/item/report/definition/page/2.1.0/schema.json",
-  "name": "34f6864f310202d3d1b1",
-  "displayName": "Vue d'ensemble",
+  "name": "65f67f4e65b391878804",
+  "displayName": "Répartition par poste-frontière",
   "displayOption": "FitToPage",
   "height": 720,
   "width": 1280
